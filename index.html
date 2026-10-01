@@ -1,0 +1,734 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>꾸러기국 우유 시장 · 함께하기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gowun+Dodum&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
+<style>
+:root{
+  --bg:#F3F8FB; --paper:#FFFFFF; --ink:#1D2B4F; --muted:#5B6A8A; --line:#D5E1EE;
+  --blue:#2F6FDB; --blue-soft:#E3EDFC; --grass:#3F9A4E; --grass-soft:#E2F3E4;
+  --red:#D9443A; --red-soft:#FCE6E4; --butter:#F6C945; --butter-ink:#4A3A00;
+  --display:"Jua","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  --body:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0F1A2E;--paper:#18253D;--ink:#EAF1FB;--muted:#9FB0CC;--line:#2A3B58;--blue:#6FA0F5;--blue-soft:#1E3157;--grass:#6CC27A;--grass-soft:#1D3527;--red:#F06A5F;--red-soft:#3E2124}}
+:root[data-theme="dark"]{--bg:#0F1A2E;--paper:#18253D;--ink:#EAF1FB;--muted:#9FB0CC;--line:#2A3B58;--blue:#6FA0F5;--blue-soft:#1E3157;--grass:#6CC27A;--grass-soft:#1D3527;--red:#F06A5F;--red-soft:#3E2124}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.55}
+h1,h2,h3,h4{font-family:var(--display);font-weight:400;margin:0;line-height:1.25}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px}
+.top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:14px 0;border-bottom:2px solid var(--line);margin-bottom:16px}
+.top h1{font-size:clamp(22px,3.4vw,32px)}
+.top .sp{flex:1}
+.pill{display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);background:var(--paper);border-radius:999px;padding:3px 12px;font-size:15px}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--muted)}
+.dot.on{background:var(--grass)} .dot.bad{background:var(--red)}
+.btn{border:0;border-radius:12px;padding:11px 18px;font-family:var(--display);font-size:18px;background:var(--blue);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:2px solid var(--line)}
+.btn.warn{background:var(--red)}
+.btn.big{font-size:22px;padding:16px 24px;width:100%}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.tiny{font-size:14px;color:var(--muted)}
+.card{background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:16px}
+.lead{max-width:62ch;font-size:18px}
+input[type=text]{width:100%;border:2px solid var(--line);border-radius:12px;padding:12px;background:var(--paper);font-size:20px}
+.home{display:grid;grid-template-columns:1fr 1fr;gap:18px;max-width:900px}
+@media (max-width:720px){.home{grid-template-columns:1fr}}
+.home h2{font-size:26px;margin-bottom:6px}
+label.f{display:block;font-family:var(--display);margin:10px 0 4px}
+/* lobby */
+.lobby{display:grid;grid-template-columns:340px 1fr;gap:18px}
+@media (max-width:860px){.lobby{grid-template-columns:1fr}}
+.code{font-family:var(--display);font-size:64px;letter-spacing:.12em;line-height:1;color:var(--blue)}
+.qr svg{width:100%;max-width:260px;height:auto;background:#fff;border-radius:8px}
+.slots-roles{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:8px}
+.rs{border:2px solid var(--line);border-radius:12px;padding:8px 10px;background:var(--paper);display:flex;flex-direction:column;gap:2px;text-align:left}
+.rs.taken{border-color:var(--grass);background:var(--grass-soft)}
+.rs b{font-family:var(--display);font-weight:400}
+/* board */
+.layout{display:grid;grid-template-columns:1fr 300px;gap:16px}
+@media (max-width:980px){.layout{grid-template-columns:1fr}}
+.board{display:grid;gap:10px}
+.lane{font-family:var(--display);color:var(--muted);font-size:16px;display:flex;align-items:center;gap:8px}
+.lane::before{content:"";width:18px;border-top:2px dashed var(--muted)}
+.farm{position:relative;border-radius:18px;padding:14px 16px;background:
+  radial-gradient(circle at 8% 30%,rgba(29,43,79,.07) 0 18px,transparent 19px),
+  radial-gradient(circle at 92% 70%,rgba(29,43,79,.07) 0 24px,transparent 25px),var(--grass-soft);
+  border:2px solid var(--grass);display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between}
+.farm h4{font-size:21px}
+.cows{display:flex;flex-wrap:wrap;gap:2px;font-size:30px;line-height:1}
+.cows .sick{filter:grayscale(1);opacity:.3}
+.milkcount{font-family:var(--display);font-size:19px;text-align:right}
+.milkcount b{font-size:40px;color:var(--blue);font-weight:400}
+.shops{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.shop{position:relative;background:var(--paper);border:2px solid var(--line);border-radius:6px 6px 14px 14px;padding:0 10px 10px}
+.awning{height:14px;margin:0 -10px 8px;border-radius:4px 4px 0 0;background:repeating-linear-gradient(90deg,var(--muted) 0 14px,var(--paper) 14px 28px);border-bottom:2px solid var(--line);opacity:.6}
+.shop.open .awning{background:repeating-linear-gradient(90deg,var(--blue) 0 14px,var(--paper) 14px 28px);opacity:1}
+.shop h4{font-size:17px}
+.who{font-size:13px;color:var(--muted)}
+.meter{height:9px;background:var(--bg);border-radius:9px;overflow:hidden;margin:6px 0 2px;border:1px solid var(--line)}
+.meter span{display:block;height:100%;background:var(--blue);transition:width .3s}
+.meter.short span{background:var(--red)}
+.slots{display:flex;flex-wrap:wrap;gap:3px;margin:8px 0 4px}
+.slot{width:26px;height:26px;display:grid;place-items:center;border-radius:6px;font-size:17px;border:1.5px solid transparent;background:none;padding:0}
+.slot.wait{border:1.5px dashed var(--line);opacity:.35}
+.slot.stock{background:var(--butter);border-color:var(--butter)}
+.slot.sold{opacity:.3}
+.slot.miss{border:1.5px dashed var(--red);color:var(--red);font-size:13px}
+.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:10px}
+.rcpt{position:relative;background:var(--paper);border:2px dashed var(--line);border-radius:4px;padding:8px 10px}
+.rcpt h4{font-size:16px}
+.rcpt ul{list-style:none;margin:4px 0 0;padding:0;font-size:15px}
+.rcpt li{display:flex;justify-content:space-between;gap:6px}
+.rcpt li.ok b{color:var(--grass)} .rcpt li.part b{color:var(--red)}
+.sticker{position:absolute;right:-6px;top:-10px;transform:rotate(6deg);font-family:var(--display);font-size:14px;padding:4px 8px;box-shadow:0 2px 0 rgba(0,0,0,.15);z-index:1}
+.sticker.ok{background:var(--butter);color:var(--butter-ink)}
+.sticker.fail{background:var(--red);color:#fff;transform:rotate(-5deg)}
+@media (prefers-reduced-motion:no-preference){.sticker{animation:stick .35s ease-out}@keyframes stick{from{transform:scale(1.6);opacity:0}}}
+.feed{background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:12px;max-height:70vh;overflow:auto}
+.feed h3{font-size:18px;margin-bottom:6px}
+.feed ol{list-style:none;margin:0;padding:0;font-size:15px}
+.feed li{padding:5px 0;border-bottom:1px dashed var(--line)}
+.feed li:first-child{font-weight:700}
+.news{background:var(--red-soft);border-left:8px solid var(--red);border-radius:12px;padding:12px 16px;margin:10px 0}
+.news h3{color:var(--red);font-size:21px}
+/* student */
+.me-wrap{max-width:560px;margin:0 auto}
+.rolehead{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.rolehead .ic{font-size:44px;line-height:1}
+.rolehead h2{font-size:28px}
+.stepcard{position:relative;background:var(--paper);border:2px solid var(--line);border-radius:16px;padding:14px;margin-bottom:12px}
+.stepcard.done{border-color:var(--grass)}
+.stepcard h3{font-size:20px;margin-bottom:6px;display:flex;gap:8px;align-items:center}
+.stepcard h3 i{font-style:normal;display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--blue-soft);color:var(--blue);font-size:15px}
+.stepcard.done h3 i{background:var(--grass);color:#fff}
+.make{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:8px;margin-top:8px}
+.make button{aspect-ratio:1;border-radius:12px;font-size:30px;border:2px dashed var(--line);background:var(--bg)}
+.make button.made{border:2px solid var(--butter);background:var(--butter)}
+.make button.sold{opacity:.35}
+.make button:disabled{cursor:default}
+.make button.can{border-color:var(--blue);background:var(--blue-soft)}
+.big-n{font-family:var(--display);font-size:34px}
+.mkt{display:grid;gap:8px}
+.mi{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:14px;padding:10px;background:var(--paper)}
+.mi .ic{font-size:32px}
+.mi .tx{flex:1}
+.mi .tx b{font-family:var(--display);font-weight:400;font-size:19px}
+.mi.done{border-color:var(--grass);background:var(--grass-soft)}
+.ord{display:flex;flex-direction:column;gap:2px}
+.ord button{border:1px solid var(--line);background:var(--paper);border-radius:6px;padding:0 8px;font-size:13px}
+.result{border-radius:16px;padding:14px 16px;margin-bottom:12px;font-size:18px}
+.result.ok{background:var(--butter);color:var(--butter-ink)}
+.result.fail{background:var(--red-soft);border:2px solid var(--red)}
+.result h3{font-size:24px}
+.pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.pick button{border:2px solid var(--line);background:var(--paper);border-radius:12px;padding:10px;text-align:left}
+.pick button[aria-pressed="true"]{border-color:var(--blue);background:var(--blue-soft)}
+.pick button:disabled{opacity:.4}
+.pick small{display:block;color:var(--muted);font-size:13px}
+textarea{width:100%;min-height:84px;border:2px solid var(--line);border-radius:12px;padding:10px;background:var(--paper);resize:vertical}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:14px;max-width:90vw;z-index:20;font-size:17px}
+/* reflect host */
+.cmp{display:grid;gap:12px;max-width:820px}
+.bar{display:grid;grid-template-columns:70px 1fr 100px;align-items:center;gap:8px;font-size:15px}
+.bar .track{height:20px;background:var(--paper);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.bar .fill{height:100%;background:var(--blue)} .bar.b2 .fill{background:var(--red)}
+.bar .v{text-align:right}
+.ripple{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0}
+.ripple .node{flex:1 1 150px;background:var(--red-soft);border:2px solid var(--red);border-radius:14px;padding:10px 12px}
+.ripple .node strong{font-family:var(--display);font-weight:400;font-size:19px;display:block}
+.ripple .arr{align-self:center;font-size:22px;color:var(--red)}
+.refl{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.refl .card p{margin:4px 0;font-size:15px}
+.wrapup{margin-top:18px;max-width:820px;background:var(--butter);color:var(--butter-ink);border-radius:4px;padding:16px 18px;transform:rotate(-.5deg);font-size:18px}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div id="toast" class="toast" hidden></div>
+<script>
+/* ===== CORE (게임 규칙: 지도안 수치 그대로) ===== */
+const PER_COW = 5, MILK_PRICE = 1000;
+const SHOPS = [
+  {id:'mart',   name:'마트',           product:'우유',       icon:'🥛', per:1, target:10, price:2000,  unit:'개'},
+  {id:'bakery', name:'빵 가게',        product:'케이크',     icon:'🎂', per:1, target:5,  price:10000, unit:'개'},
+  {id:'ice',    name:'아이스크림 가게', product:'아이스크림', icon:'🍦', per:1, target:6,  price:2000,  unit:'개'},
+  {id:'formula',name:'분유 가게',      product:'분유',       icon:'🍼', per:3, target:3,  price:20000, unit:'통'},
+  {id:'yogurt', name:'요구르트 가게',  product:'요구르트',   icon:'🥣', per:1, target:5,  price:2000,  unit:'개'},
+  {id:'coffee', name:'커피 가게',      product:'카푸치노',   icon:'☕', per:1, target:5,  price:5000,  unit:'잔'},
+  {id:'cheese', name:'치즈 가게',      product:'치즈',       icon:'🧀', per:1, target:5,  price:5000,  unit:'개'},
+];
+const BY = Object.fromEntries(SHOPS.map(s=>[s.id,s]));
+const NEED = s => s.target*s.per;
+const TOTAL_NEED = SHOPS.reduce((a,s)=>a+NEED(s),0);
+const CONSUMERS = [
+  [['mart',2],['ice',1],['coffee',1]],
+  [['bakery',1],['formula',1],['yogurt',1]],
+  [['mart',1],['ice',2],['yogurt',2]],
+  [['bakery',1],['formula',1],['cheese',1]],
+  [['mart',1],['ice',2],['yogurt',2]],
+  [['bakery',1],['formula',1],['coffee',1]],
+  [['mart',2],['coffee',1],['cheese',1]],
+  [['bakery',1],['coffee',1],['cheese',1]],
+  [['mart',2],['bakery',1],['coffee',1]],
+  [['mart',2],['ice',1],['cheese',2]],
+];
+const ROLES = ['farm', ...SHOPS.map(s=>s.id), ...CONSUMERS.map((_,i)=>'c'+i)];
+const roleName = r => r==='farm' ? '젖소 농가' : r==='watch' ? '관찰 기자' : BY[r] ? BY[r].name : r && r[0]==='c' ? `${+r.slice(1)+1}번 손님` : '';
+const roleIcon = r => r==='farm' ? '🐄' : r==='watch' ? '📰' : BY[r] ? BY[r].icon : '🧺';
+const won = n => (n||0).toLocaleString('ko-KR')+'원';
+const consBudget = i => CONSUMERS[i].reduce((a,[s,w])=>a+BY[s].price*w,0);
+
+function freshShops(){ return Object.fromEntries(SHOPS.map(s=>[s.id,{milkIn:0,milk:0,made:0,stock:0,sold:0,open:false,income:0,cost:0,requested:false}])); }
+function freshCons(old){ return CONSUMERS.map((list,i)=>({bought:Object.fromEntries(list.map(([s])=>[s,0])), spent:0, order: old&&old[i]?old[i].order:[0,1,2]})); }
+
+function newGame(){
+  return { v:0, phase:'lobby', round:0, cows:9, made:45, milk:45, method:'first', farmOpen:false, distributed:false,
+    requests:[], shops:freshShops(), consumers:freshCons(), farm:{sold:0,money:0},
+    players:{}, roles:{}, botsForEmpty:true, roundDone:false, log:[], history:{}, reflections:{}, tick:0, openTick:0 };
+}
+function log(g,t){ g.log.unshift(t); if(g.log.length>40) g.log.length=40; }
+
+function startRound(g, round){
+  g.phase='play'; g.round=round; g.cows = round===1?9:5; g.made=g.cows*PER_COW; g.milk=g.made;
+  g.method = round===1?'first':null; g.farmOpen=false; g.distributed=false; g.requests=[];
+  g.shops=freshShops(); g.consumers=freshCons(g.consumers); g.farm={sold:0,money:0}; g.roundDone=false; g.log=[];
+  log(g, round===1 ? `활동 1 시작! 젖소 ${g.cows}마리가 우유 ${g.made}팩을 만들었어요.` : `🚨 돌림병으로 젖소 4마리가 죽었어요. 우유는 ${g.made}팩뿐이에요.`);
+}
+
+function missions(g){
+  const shops = Object.fromEntries(SHOPS.map(s=>{ const x=g.shops[s.id]; return [s.id, x.made===s.target && x.sold===s.target]; }));
+  const cons = g.consumers.map((c,i)=>CONSUMERS[i].every(([s,w])=>c.bought[s]>=w));
+  const farm = g.made>0 && g.farm.sold===g.made;
+  return {shops, cons, farm};
+}
+function summarize(g){
+  const m=missions(g);
+  return { round:g.round, cows:g.cows, milk:g.made, method:g.method,
+    items: SHOPS.reduce((a,s)=>a+g.shops[s.id].made,0),
+    shopsOk: SHOPS.filter(s=>m.shops[s.id]).length, consOk: m.cons.filter(Boolean).length, farmOk:m.farm,
+    income: g.farm.money + SHOPS.reduce((a,s)=>a+g.shops[s.id].income-g.shops[s.id].cost,0),
+    shopFails: SHOPS.filter(s=>!m.shops[s.id]).map(s=>s.id), consFails: m.cons.map((ok,i)=>ok?null:i).filter(x=>x!==null) };
+}
+
+function giveMilk(g, id, q){
+  const sh=g.shops[id]; g.milk-=q; sh.milkIn+=q; sh.milk+=q; sh.cost+=q*MILK_PRICE;
+  g.farm.sold+=q; g.farm.money+=q*MILK_PRICE;
+}
+function distribute(g){
+  const ids = g.requests.filter(id=>g.shops[id].milkIn===0);
+  const needSum = ids.reduce((a,id)=>a+NEED(BY[id]),0);
+  if(!ids.length) return '아직 우유를 주문한 가게가 없어요.';
+  const pool = g.milk;
+  const raw = ids.map(id=>{ const v=Math.min(NEED(BY[id]), NEED(BY[id])*pool/needSum); return {id, v, q:Math.floor(v)}; });
+  let left = pool - raw.reduce((a,x)=>a+x.q,0);
+  raw.slice().sort((a,b)=>(b.v%1)-(a.v%1)).forEach(x=>{ if(left>0 && x.q<NEED(BY[x.id])){ x.q++; left--; } });
+  raw.forEach(x=>{ if(x.q>0) giveMilk(g,x.id,x.q); });
+  g.distributed=true;
+  log(g, `젖소 농가가 우유를 골고루 나누어 주었어요: ${raw.map(x=>`${BY[x.id].name} ${x.q}팩`).join(', ')}`);
+  return null;
+}
+
+/* actor: {role, host:boolean, cid, name}. 실패하면 이유 문장을 돌려줌 */
+function apply(g, a, actor){
+  const host = actor.host, role = actor.role;
+  const mine = r => host || role===r;
+  const live = g.phase==='play' && !g.roundDone;
+  switch(a.t){
+    case 'start1': if(!host) return '권한 없음'; startRound(g,1); return null;
+    case 'start2': if(!host) return '권한 없음'; startRound(g,2); return null;
+    case 'endRound': if(!host) return '권한 없음'; if(g.roundDone) return null; g.roundDone=true; g.history[g.round]=summarize(g);
+      log(g,'⏰ 시장이 문을 닫았어요. 결과를 확인해요.'); return null;
+    case 'reflect': if(host){ g.phase='reflect'; return null; }
+      g.reflections[actor.cid]={name:actor.name, role, q1:String(a.q1||'').slice(0,400), q2:String(a.q2||'').slice(0,400), q3:String(a.q3||'').slice(0,400)}; return null;
+    case 'toLobby': if(!host) return '권한 없음'; g.phase='lobby'; return null;
+    case 'bots': if(!host) return '권한 없음'; g.botsForEmpty=!!a.on; return null;
+    case 'free': if(!host) return '권한 없음'; { const cid=g.roles[a.role]; if(cid&&g.players[cid]) g.players[cid].role=null; delete g.roles[a.role]; } return null;
+    case 'pick': {
+      if(host) return null;
+      const p=g.players[actor.cid]; if(!p) return '먼저 참여해 주세요.';
+      if(a.role!=='watch' && !ROLES.includes(a.role)) return '없는 역할이에요.';
+      if(a.role!=='watch' && g.roles[a.role] && g.roles[a.role]!==actor.cid) return '다른 친구가 이미 고른 역할이에요.';
+      if(p.role && p.role!=='watch') delete g.roles[p.role];
+      p.role=a.role; if(a.role!=='watch') g.roles[a.role]=actor.cid; return null; }
+    case 'order': {
+      if(!role || role[0]!=='c') return '손님만 정할 수 있어요.';
+      const o=a.order; if(!Array.isArray(o)||o.slice().sort().join()!=='0,1,2') return '순서가 올바르지 않아요.';
+      g.consumers[+role.slice(1)].order=o.slice(); return null; }
+    case 'farmMethod':
+      if(!mine('farm')) return '젖소 농가만 정할 수 있어요.'; if(!live) return '지금은 정할 수 없어요.';
+      if(g.farmOpen) return '이미 판매를 시작했어요.'; if(!['first','even'].includes(a.m)) return '판매 방식을 골라 주세요.';
+      g.method=a.m; log(g, `젖소 농가가 「${a.m==='first'?'오는 순서대로 팔기':'골고루 나누어 팔기'}」로 정했어요.`); return null;
+    case 'farmOpen':
+      if(!mine('farm')) return '젖소 농가만 열 수 있어요.'; if(!live) return '지금은 열 수 없어요.';
+      if(!g.method) return '먼저 판매 방식을 정해 주세요.'; if(g.farmOpen) return null;
+      g.farmOpen=true; g.openTick=g.tick; log(g,'🐄 젖소 농가가 우유 판매를 시작했어요(OPEN).'); return null;
+    case 'distribute':
+      if(!mine('farm')) return '젖소 농가만 나눌 수 있어요.'; if(!live||!g.farmOpen) return '지금은 나눌 수 없어요.';
+      if(g.method!=='even'||g.distributed) return '이미 나누었어요.'; return distribute(g);
+    case 'buyMilk': {
+      const id=a.shop, s=BY[id]; if(!s||!mine(id)) return '내 가게가 아니에요.'; if(!live) return '지금은 살 수 없어요.';
+      if(!g.farmOpen) return '젖소 농가가 아직 문을 열지 않았어요.';
+      const sh=g.shops[id]; if(sh.milkIn>0||sh.requested) return '이미 우유를 샀어요.';
+      if(g.method==='even' && !g.distributed){ sh.requested=true; g.requests.push(id); log(g,`${s.name}가 우유 ${NEED(s)}팩을 주문했어요.`); return null; }
+      const q=Math.min(NEED(s), g.milk); if(q===0){ sh.requested=true; log(g,`${s.name}가 갔지만 우유가 하나도 남지 않았어요.`); return '젖소 농가에 우유가 하나도 남지 않았어요.'; }
+      giveMilk(g,id,q); log(g, q<NEED(s) ? `${s.name}는 ${NEED(s)}팩이 필요한데 ${q}팩밖에 못 샀어요.` : `${s.name}가 우유 ${q}팩을 샀어요.`); return null; }
+    case 'make': {
+      const id=a.shop, s=BY[id]; if(!s||!mine(id)) return '내 가게가 아니에요.'; if(!live) return '지금은 만들 수 없어요.';
+      const sh=g.shops[id]; if(sh.made>=s.target) return '이미 다 만들었어요.'; if(sh.milk<s.per) return `우유가 모자라요. ${s.product} 1${s.unit}에 우유 ${s.per}팩이 필요해요.`;
+      sh.milk-=s.per; sh.made++; sh.stock++; return null; }
+    case 'shopOpen': {
+      const id=a.shop, s=BY[id]; if(!s||!mine(id)) return '내 가게가 아니에요.'; if(!live) return '지금은 열 수 없어요.';
+      const sh=g.shops[id]; if(sh.made===0) return '먼저 상품을 만들어야 해요.'; if(sh.open) return null;
+      sh.open=true; log(g,`🔔 ${s.name} 문을 열었어요! (${s.product} ${sh.stock}${s.unit})`); return null; }
+    case 'buy': {
+      const ci=+String(role||'').slice(1), id=a.shop, s=BY[id];
+      const cr = host ? a.c : ci; if(!host && (!role||role[0]!=='c')) return '손님만 살 수 있어요.';
+      if(!live) return '지금은 살 수 없어요.'; const c=g.consumers[cr]; const want=(CONSUMERS[cr].find(x=>x[0]===id)||[])[1];
+      if(!s||!want) return '내 장보기 목록에 없는 물건이에요.'; if(c.bought[id]>=want) return '이미 다 샀어요.';
+      const sh=g.shops[id]; if(!sh.open) return `${s.name}가 아직 문을 열지 않았어요.`; if(sh.stock<=0) return `${s.name}에 ${s.product}가 다 떨어졌어요.`;
+      sh.stock--; sh.sold++; sh.income+=s.price; c.bought[id]++; c.spent+=s.price;
+      log(g,`${cr+1}번 손님이 ${s.name}에서 ${s.product}를 샀어요.`); return null; }
+  }
+  return '알 수 없는 행동';
+}
+
+/* 빈 역할을 컴퓨터가 대신함 (선생님 기기에서만 실행) */
+function isBot(g,r){ return g.botsForEmpty && !g.roles[r]; }
+function botStep(g, rnd){
+  g.tick++;
+  if(g.phase!=='play'||g.roundDone) return false;
+  let changed=false; const act=(a,r)=>{ if(!apply(g,a,{host:false,role:r})) changed=true; };
+  if(isBot(g,'farm')){
+    if(!g.method) act({t:'farmMethod',m:'first'},'farm');
+    else if(!g.farmOpen && rnd()<.6) act({t:'farmOpen'},'farm');
+    else if(g.farmOpen && g.method==='even' && !g.distributed && g.requests.length && (g.requests.length===SHOPS.length || g.tick-g.openTick>12)) act({t:'distribute'},'farm');
+  }
+  for(const s of SHOPS){ if(!isBot(g,s.id) || rnd()>.45) continue; const sh=g.shops[s.id];
+    if(g.farmOpen && !sh.milkIn && !sh.requested) act({t:'buyMilk',shop:s.id},s.id);
+    else if(sh.milk>=s.per && sh.made<s.target) act({t:'make',shop:s.id},s.id);
+    else if(sh.made>0 && !sh.open && (sh.milk<s.per||sh.made===s.target) && (sh.milkIn>0)) act({t:'shopOpen',shop:s.id},s.id);
+  }
+  CONSUMERS.forEach((list,i)=>{ const r='c'+i; if(!isBot(g,r) || rnd()>.3) return; const c=g.consumers[i];
+    for(const k of c.order){ const [id,w]=list[k]; if(c.bought[id]<w && g.shops[id].open && g.shops[id].stock>0){ act({t:'buy',shop:id},r); break; } }
+  });
+  return changed;
+}
+/* ===== /CORE ===== */
+/* ===== 공통 도구 ===== */
+const $app = document.getElementById('app');
+const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const store = { get(k,d){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):d; }catch(e){ return d; } }, set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} } };
+let toastT; function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>t.hidden=true,2600); }
+const PREFIX='kkrmilk26-';
+const CODE_CH='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+const newCode=()=>Array.from({length:5},()=>CODE_CH[Math.floor(Math.random()*CODE_CH.length)]).join('');
+let CID = store.get('kkr-cid',null); if(!CID){ CID='s'+Math.random().toString(36).slice(2,12); store.set('kkr-cid',CID); }
+const params = new URLSearchParams(location.search);
+
+let MODE='home';      // home | host | student
+let G=null;           // 게임 상태 (선생님: 원본 / 학생: 받은 사본)
+let NET='idle';       // idle | connecting | online | nohost | lost | offline | error
+let CODE=null, NAME='';
+let peer=null, hostConn=null;
+const conns=new Map();
+
+/* ===== 선생님(호스트) ===== */
+function hostBegin(code, restore){
+  MODE='host'; CODE=code; G = restore || newGame(); store.set('kkr-host',{code}); saveHost();
+  history.replaceState(null,'',location.pathname);
+  hostNet(); setInterval(hostTick,650); render();
+}
+function saveHost(){ store.set('kkr-game',G); }
+function hostNet(){
+  if(!window.Peer){ NET='offline'; render(); return; }
+  NET='connecting';
+  try{ peer=new Peer(PREFIX+CODE); }catch(e){ NET='offline'; render(); return; }
+  peer.on('open',()=>{ NET='online'; render(); });
+  peer.on('error',e=>{
+    if(e.type==='unavailable-id'){ NET='connecting'; setTimeout(()=>{ try{peer.destroy();}catch(_){} hostNet(); },4000); }
+    else if(e.type==='network'||e.type==='server-error'||e.type==='socket-error'){ NET='error'; setTimeout(()=>{ try{peer.reconnect();}catch(_){} },3000); }
+    render();
+  });
+  peer.on('disconnected',()=>{ NET='connecting'; render(); setTimeout(()=>{ try{peer.reconnect();}catch(_){} },1500); });
+  peer.on('connection',conn=>{
+    conn.on('data',m=>hostMsg(conn,m));
+    conn.on('close',()=>{ const i=conns.get(conn.peer); conns.delete(conn.peer); if(i&&G.players[i.cid]){ G.players[i.cid].online=false; changed(); } });
+  });
+}
+function hostMsg(conn,m){
+  if(!m||typeof m!=='object') return;
+  if(m.t==='hello'){
+    const cid=String(m.cid||'').slice(0,40); if(!cid) return;
+    const name=String(m.name||'').trim().slice(0,12)||'학생';
+    conns.set(conn.peer,{conn,cid});
+    const p=G.players[cid]||(G.players[cid]={role:null}); p.name=name; p.online=true;
+    changed(); sendTo(conn); return;
+  }
+  const i=conns.get(conn.peer); if(!i) return; const p=G.players[i.cid]; if(!p) return;
+  const err=apply(G,m,{host:false,role:p.role,cid:i.cid,name:p.name});
+  if(err) conn.send({t:'err',msg:err}); else changed();
+}
+function publicState(){ const g={...G, reflections:Object.fromEntries(Object.keys(G.reflections).map(k=>[k,1]))}; return g; }
+function sendTo(conn){ if(conn.open) conn.send({t:'state',g:publicState()}); }
+let bcT=null;
+function changed(){
+  G.v++; saveHost(); render();
+  if(!bcT) bcT=setTimeout(()=>{ bcT=null; const g=publicState(); conns.forEach(({conn})=>{ if(conn.open) conn.send({t:'state',g}); }); },90);
+}
+function hostTick(){ if(G && botStep(G,Math.random)) changed(); }
+function hostAct(a){ const err=apply(G,a,{host:true}); if(err) toast(err); else changed(); }
+
+/* ===== 학생 ===== */
+function studentBegin(code,name){
+  MODE='student'; CODE=code; NAME=name; store.set('kkr-student',{code,name});
+  history.replaceState(null,'',location.pathname+'?room='+code);
+  studentNet(); render();
+}
+let retryT=null;
+function studentRetry(){ if(retryT) return; retryT=setTimeout(()=>{ retryT=null; try{peer&&peer.destroy();}catch(_){} studentNet(); },2500); }
+function studentNet(){
+  if(!window.Peer){ NET='offline'; render(); return; }
+  NET='connecting'; render();
+  peer=new Peer();
+  peer.on('open',()=>{
+    hostConn=peer.connect(PREFIX+CODE,{reliable:true});
+    hostConn.on('open',()=>{ NET='online'; hostConn.send({t:'hello',cid:CID,name:NAME}); render(); });
+    hostConn.on('data',m=>{
+      if(m&&m.t==='state'){ G=m.g; render(); }
+      else if(m&&m.t==='err') toast(m.msg);
+    });
+    hostConn.on('close',()=>{ NET='lost'; render(); studentRetry(); });
+  });
+  peer.on('error',e=>{ NET = e.type==='peer-unavailable' ? 'nohost' : 'lost'; render(); studentRetry(); });
+}
+function send(a){ if(hostConn&&hostConn.open) hostConn.send(a); else toast('선생님 화면과 연결이 끊겼어요. 잠시 후 다시 눌러 주세요.'); }
+const myRole = () => G && G.players[CID] ? G.players[CID].role : null;
+
+/* ===== 결과 설명 ===== */
+function outcome(g, role){
+  const m=missions(g);
+  if(role==='farm'){
+    if(m.farm) return {ok:true, msg:`우유 ${g.farm.sold}팩을 모두 팔아 ${won(g.farm.money)}을 벌었어요.${g.cows<9?' 평소(45,000원)보다 적게 벌었어요.':''}`};
+    return {ok:false, msg:`우유 ${g.made-g.farm.sold}팩이 팔리지 않고 남았어요.`};
+  }
+  if(BY[role]){ const s=BY[role], x=g.shops[role];
+    if(m.shops[role]) return {ok:true, msg:`${s.product} ${s.target}${s.unit}를 모두 팔아 ${won(x.income)}을 벌었어요. (우유 값 ${won(x.cost)})`};
+    if(x.milkIn<NEED(s)) return {ok:false, msg:`우유를 ${NEED(s)}팩 사야 했는데 ${x.milkIn}팩밖에 못 사서 ${s.product}를 ${x.made}${s.unit}만 만들었어요.`};
+    if(x.made<s.target) return {ok:false, msg:`시간 안에 ${s.product}를 다 만들지 못했어요.`};
+    return {ok:false, msg:`만든 ${s.product}를 다 팔지 못했어요.`};
+  }
+  if(role&&role[0]==='c'){ const i=+role.slice(1), c=g.consumers[i];
+    if(m.cons[i]) return {ok:true, msg:'장보기 목록의 물건을 모두 샀어요!'};
+    const miss=CONSUMERS[i].filter(([s,w])=>c.bought[s]<w);
+    return {ok:false, msg: miss.map(([s,w])=>{ const sh=g.shops[s], S=BY[s];
+      const why = sh.made<S.target ? `${S.name}가 우유가 모자라 ${S.product}를 ${sh.made}${S.unit}만 만들었어요` : `${S.name}의 ${S.product}가 먼저 다 팔렸어요`;
+      return `${S.product}(${c.bought[s]}/${w}) — ${why}.`; }).join(' ')};
+  }
+  return null;
+}
+
+/* ===== 공용 시장판 ===== */
+function playerOf(g,r){ const cid=g.roles[r]; const p=cid&&g.players[cid]; return p ? `${esc(p.name)}${p.online===false?' (연결 끊김)':''}` : (g.botsForEmpty?'컴퓨터':'비어 있음'); }
+function boardHTML(g){
+  const m=missions(g), sick=Math.max(0,9-g.cows);
+  const st=(ok)=> ok?'<span class="sticker ok">미션 완료</span>': g.roundDone?'<span class="sticker fail">미션 실패</span>':'';
+  let h=`<div class="lane">생산 1: 젖소 농가</div>
+  <div class="farm">${st(m.farm)}
+    <div><h4>젖소 농가 <span class="who">${playerOf(g,'farm')}</span></h4>
+      <div class="cows">${'<span>🐄</span>'.repeat(g.cows)}${'<span class="sick">🐄</span>'.repeat(sick)}</div>
+      <div class="tiny">${g.method?(g.method==='first'?'오는 순서대로 팔기':'골고루 나누어 팔기'):'판매 방식을 정하는 중'} · ${g.farmOpen?'판매 중(OPEN)':'문 닫음'}${g.method==='even'&&g.farmOpen&&!g.distributed?` · 주문한 가게 ${g.requests.length}/7`:''}</div></div>
+    <div class="milkcount">남은 우유 <b>${g.milk}</b>팩<div class="tiny">만든 우유 ${g.made}팩 · 번 돈 ${won(g.farm.money)}</div></div>
+  </div>
+  <div class="lane">생산 2: 우유로 상품을 만드는 가게</div><div class="shops">`;
+  for(const s of SHOPS){ const x=g.shops[s.id], need=NEED(s);
+    let slots=''; for(let j=0;j<s.target;j++){ const sold=x.sold;
+      if(j<x.made) slots+=`<span class="slot ${j<sold?'sold':'stock'}">${s.icon}</span>`;
+      else slots+= g.roundDone?`<span class="slot miss">✕</span>`:`<span class="slot wait">${s.icon}</span>`; }
+    h+=`<article class="shop${x.open?' open':''}">${st(m.shops[s.id])}<div class="awning"></div>
+      <h4>${s.name}</h4><div class="who">${playerOf(g,s.id)}</div>
+      <div class="meter${x.milkIn&&x.milkIn<need||(x.requested&&!x.milkIn&&g.distributed)?' short':''}"><span style="width:${x.milkIn/need*100}%"></span></div>
+      <div class="tiny">우유 ${x.milkIn}/${need}팩${x.requested&&!x.milkIn&&!g.distributed?' (주문함)':''}</div>
+      <div class="slots">${slots}</div><div class="tiny">${s.product} ${won(s.price)} · 판매 ${x.sold}</div></article>`; }
+  h+=`</div><div class="lane">소비: 장 보는 손님</div><div class="people">`;
+  g.consumers.forEach((c,i)=>{
+    const lis=c.order.map(k=>{ const [sid,w]=CONSUMERS[i][k], s=BY[sid], b=c.bought[sid];
+      return `<li class="${b>=w?'ok':b>0?'part':''}"><span>${s.icon} ${s.product} ×${w}</span><b>${b>=w?'✓':`${b}/${w}`}</b></li>`; }).join('');
+    h+=`<article class="rcpt">${st(m.cons[i])}<h4>${i+1}번 손님</h4><div class="who">${playerOf(g,'c'+i)}</div><ul>${lis}</ul></article>`;
+  });
+  return h+'</div>';
+}
+
+/* ===== 화면: 처음 ===== */
+function viewHome(){
+  const saved=store.get('kkr-host',null), stu=store.get('kkr-student',null), room=(params.get('room')||'').toUpperCase();
+  return `<div class="top"><h1>🥛 꾸러기국 우유 시장 · 함께하기</h1></div>
+  <p class="lead">학생 18명이 각자 기기로 젖소 농가, 가게, 손님이 되어 실시간으로 우유와 상품을 사고팔아요. 선생님 화면이 시장 전체를 보여 줘요.</p>
+  ${!window.Peer?`<div class="news"><h3>연결 도구를 불러오지 못했어요</h3>인터넷 연결을 확인해 주세요. 선생님은 아래에서 「컴퓨터와 미리 해 보기」로 혼자 진행해 볼 수 있어요.</div>`:''}
+  <div class="home" style="margin-top:16px">
+    <div class="card"${room?' style="order:2"':''}>
+      <h2>선생님</h2>
+      <p class="tiny">게임을 만들면 참여 코드와 QR이 나와요. 이 화면을 칠판(프로젝터)에 띄워 주세요.</p>
+      <div class="row" style="margin-top:12px"><button class="btn" data-act="hostNew">새 게임 만들기</button>
+      ${saved&&store.get('kkr-game',null)?`<button class="btn ghost" data-act="hostResume">이어서 진행하기 (${esc(saved.code)})</button>`:''}</div>
+    </div>
+    <div class="card">
+      <h2>학생</h2>
+      <label class="f" for="inCode">참여 코드</label>
+      <input type="text" id="inCode" maxlength="5" autocomplete="off" value="${esc(room||stu?.code||'')}" placeholder="예: K7MPQ" style="text-transform:uppercase;letter-spacing:.15em">
+      <label class="f" for="inName">내 이름</label>
+      <input type="text" id="inName" maxlength="12" autocomplete="off" value="${esc(stu?.name||'')}" placeholder="이름">
+      <div style="margin-top:14px"><button class="btn big" data-act="join">참여하기</button></div>
+    </div>
+  </div>`;
+}
+
+/* ===== 화면: 선생님 ===== */
+function netPill(){
+  const map={online:['on','연결됨'],connecting:['','연결 중…'],offline:['bad','혼자 모드(인터넷 연결 없음)'],error:['bad','연결 오류, 다시 시도 중'],nohost:['bad','선생님 화면을 찾을 수 없어요'],lost:['bad','연결이 끊겼어요, 다시 연결 중…'],idle:['','']};
+  const [c,t]=map[NET]||['',NET]; return `<span class="pill"><span class="dot ${c}"></span>${t}</span>`;
+}
+function joinURL(){ return location.origin+location.pathname+'?room='+CODE; }
+function qrSVG(){ try{ const q=qrcode(0,'M'); q.addData(joinURL()); q.make(); return q.createSvgTag({cellSize:6,margin:2,scalable:true}); }catch(e){ return ''; } }
+function viewHost(){
+  const g=G, online=Object.values(g.players).filter(p=>p.online).length;
+  const head=`<div class="top"><h1>🥛 꾸러기국 우유 시장</h1><span class="sp"></span>
+    <span class="pill">참여 코드 <b style="letter-spacing:.1em">${CODE}</b></span><span class="pill">접속 ${online}명</span>${netPill()}
+    <label class="pill"><input type="checkbox" data-act="bots" ${g.botsForEmpty?'checked':''}> 빈 역할은 컴퓨터가</label></div>`;
+  if(g.phase==='lobby') return head+viewHostLobby();
+  if(g.phase==='reflect') return head+viewHostReflect();
+  const r=g.round;
+  const ctrl = !g.roundDone ? `<button class="btn warn" data-act="h:endRound">시장 문 닫기 (라운드 끝)</button>`
+    : r===1 ? `<button class="btn" data-act="h:start2">활동 2 시작: 젖소가 아파요</button><button class="btn ghost" data-act="h:start1">활동 1 다시 하기</button>`
+    : `<button class="btn" data-act="h:reflect">활동 3: 생각 나누기</button><button class="btn ghost" data-act="h:start2">활동 2 다시 하기</button>`;
+  const banner = r===2 ? `<div class="news"><h3>꾸러기국 속보</h3>젖소 농장에 돌림병이 돌아 젖소 9마리 중 4마리가 죽었어요. 우유는 25팩뿐이에요. ${g.method?'':'젖소 농가가 판매 방식을 정하고 있어요.'}</div>` : '';
+  const sum = g.roundDone ? (()=>{ const s=g.history[r]; return `<div class="result ${s.consOk===10?'ok':'fail'}"><h3>활동 ${r} 결과</h3>가게 ${s.shopsOk}/7곳, 손님 ${s.consOk}/10명이 미션에 성공했어요. 가게들이 만든 상품은 ${s.items}개예요.</div>`; })() : '';
+  return head+`<div class="row" style="margin-bottom:10px"><h2 style="font-size:26px;margin-right:8px">활동 ${r}. ${r===1?'평화로운 시장':'젖소가 아파요'}</h2>${ctrl}
+    <button class="btn ghost" data-act="h:toLobby">대기실</button></div>${banner}${sum}
+    <div class="layout"><div class="board">${boardHTML(g)}</div>
+    <aside class="feed" aria-live="polite"><h3>시장 소식</h3><ol>${g.log.map(l=>`<li>${esc(l)}</li>`).join('')||'<li>아직 소식이 없어요.</li>'}</ol></aside></div>`;
+}
+function viewHostLobby(){
+  const g=G;
+  const slots=['farm',...SHOPS.map(s=>s.id),...CONSUMERS.map((_,i)=>'c'+i)].map(r=>{ const cid=g.roles[r], p=cid&&g.players[cid];
+    return `<button class="rs${p?' taken':''}" data-act="free" data-role="${r}" title="${p?'눌러서 역할 비우기':''}"><b>${roleIcon(r)} ${roleName(r)}</b><span class="tiny">${p?esc(p.name)+(p.online===false?' (연결 끊김)':''):(g.botsForEmpty?'비어 있음 → 컴퓨터':'비어 있음')}</span></button>`; }).join('');
+  const waiting=Object.entries(g.players).filter(([,p])=>!p.role||p.role==='watch').map(([,p])=>`${esc(p.name)}${p.role==='watch'?' 📰':''}`).join(', ');
+  const file = location.protocol==='file:';
+  return `<div class="lobby">
+    <div class="card"><h2 style="font-size:22px">참여하기</h2>
+      <div class="code" aria-label="참여 코드">${CODE}</div>
+      ${file?`<p class="tiny" style="color:var(--red)">지금은 파일을 직접 열었기 때문에 학생 기기에서 아래 주소로 들어올 수 없어요. 파일을 웹에 올린 주소로 열어 주세요. (같은 파일을 학생 기기에서 열고 코드를 입력해도 돼요.)</p>`:`<div class="qr" style="margin:10px 0">${qrSVG()}</div><p class="tiny" style="word-break:break-all">${esc(joinURL())}</p>`}
+    </div>
+    <div>
+      <div class="row" style="margin-bottom:10px"><h2 style="font-size:24px;flex:1">역할 (${Object.keys(g.roles).length}/18명)</h2>
+        ${g.round===0?`<button class="btn" data-act="h:start1">활동 1 시작</button>`:`<button class="btn" data-act="h:back">진행 중인 활동으로</button><button class="btn ghost" data-act="h:start1">활동 1부터 다시</button>`}</div>
+      <div class="slots-roles">${slots}</div>
+      <p class="tiny" style="margin-top:10px">역할을 아직 고르지 않은 학생 / 관찰 기자: ${waiting||'없음'}</p>
+      <p class="tiny">학생이 기기에서 직접 역할을 골라요. 칸을 누르면 그 역할을 비울 수 있어요. 학생 수가 18명보다 적으면 빈 역할은 컴퓨터가 대신해요. 18명을 넘는 학생은 「관찰 기자」로 참여해요.</p>
+      <details class="card" style="margin-top:12px"><summary style="font-family:var(--display);cursor:pointer">진행 순서 (약 34분)</summary>
+        <ol class="tiny"><li>활동 1: 젖소 농가 OPEN → 가게가 우유를 사서 상품을 만들고 문을 열기 → 손님이 장보기. 모두 끝나면 「시장 문 닫기」.</li>
+        <li>활동 2: 젖소가 5마리로 줄어요. 농가가 판매 방식을 고른 뒤 같은 순서로 진행해요. 시간이 지나도 끝나지 않으면 「시장 문 닫기」.</li>
+        <li>활동 3: 두 결과를 비교하고, 학생들이 기기에 쓴 실패 까닭과 느낀 점을 함께 봐요.</li></ol></details>
+    </div></div>`;
+}
+function viewHostReflect(){
+  const h1=G.history[1], h2=G.history[2];
+  let cmp='<p class="tiny">활동 1과 활동 2를 모두 마치면 비교 결과가 나와요.</p>', rip='';
+  if(h1&&h2){
+    const ms=[['우유 생산량',h1.milk,h2.milk,v=>v+'팩'],['가게가 만든 상품',h1.items,h2.items,v=>v+'개'],['미션 성공 가게',h1.shopsOk,h2.shopsOk,v=>v+'/7곳'],['미션 성공 손님',h1.consOk,h2.consOk,v=>v+'/10명'],['마을 사람들이 번 돈',h1.income,h2.income,won]];
+    cmp=ms.map(([t,a,b,f])=>{ const mx=Math.max(a,b,1); return `<div><h4 style="font-size:18px">${t}</h4>
+      <div class="bar"><span>활동 1</span><div class="track"><div class="fill" style="width:${a/mx*100}%"></div></div><span class="v">${f(a)}</span></div>
+      <div class="bar b2"><span>활동 2</span><div class="track"><div class="fill" style="width:${b/mx*100}%"></div></div><span class="v">${f(b)}</span></div></div>`; }).join('');
+    rip=`<h3 style="font-size:24px;margin-top:20px">문제는 이렇게 퍼져 나갔어요</h3><div class="ripple">
+      <div class="node"><strong>🐄 젖소 4마리 죽음</strong>9마리 → 5마리</div><span class="arr">→</span>
+      <div class="node"><strong>🥛 우유 20팩 감소</strong>45팩 → 25팩</div><span class="arr">→</span>
+      <div class="node"><strong>🏪 가게 ${h2.shopFails.length}곳 실패</strong>${h2.shopFails.map(id=>BY[id].name).join(', ')||'없음'}</div><span class="arr">→</span>
+      <div class="node"><strong>🧺 손님 ${h2.consFails.length}명 실패</strong>${h2.consFails.map(i=>i+1).join(', ')||'없음'}${h2.consFails.length?'번 손님':''}</div><span class="arr">→</span>
+      <div class="node"><strong>💸 ${won(h1.income-h2.income)} 줄어듦</strong>농가도 가게도 손해</div></div>`;
+  }
+  const refl=Object.values(G.reflections).filter(r=>typeof r==='object');
+  return `<div class="row" style="margin-bottom:10px"><h2 style="font-size:26px;flex:1">활동 3. 친구들과 생각 나누기</h2><button class="btn ghost" data-act="h:back">결과 화면으로</button><button class="btn ghost" data-act="h:toLobby">대기실</button></div>
+  <div class="row tiny" style="margin-bottom:8px"><span>■ 파랑: 활동 1(젖소 9마리)</span><span style="color:var(--red)">■ 빨강: 활동 2(젖소 5마리${h2?', '+(h2.method==='even'?'골고루':'선착순'):''})</span></div>
+  <div class="cmp">${cmp}</div>${rip}
+  <h3 style="font-size:24px;margin:20px 0 8px">학생들의 생각 (${refl.length}명 제출)</h3>
+  <div class="refl">${refl.map(r=>`<div class="card"><b>${esc(r.name)}</b> <span class="tiny">${roleIcon(r.role)} ${esc(roleName(r.role))}</span>
+    ${r.q1?`<p><span class="tiny">실패한 까닭</span><br>${esc(r.q1)}</p>`:''}${r.q2?`<p><span class="tiny">알게 된 점</span><br>${esc(r.q2)}</p>`:''}${r.q3?`<p><span class="tiny">느낀 점</span><br>${esc(r.q3)}</p>`:''}</div>`).join('')||'<p class="tiny">학생들이 기기에서 생각을 제출하면 여기에 나타나요.</p>'}</div>
+  <div class="wrapup"><h3 style="font-size:22px">오늘의 정리</h3>생산활동이 잘 이루어지지 않으면 그와 관련된 생산활동을 하는 사람, 그리고 소비자들도 손해를 봐요. 작은 생산활동이라도 소홀히 하면 여러 가지 피해가 생기니, 모든 생산활동을 소중히 여기는 마음을 가져요.</div>`;
+}
+
+/* ===== 화면: 학생 ===== */
+function viewStudent(){
+  const head=`<div class="top"><h1 style="font-size:22px">🥛 꾸러기국 우유 시장</h1><span class="sp"></span><span class="pill">${esc(NAME)}</span>${netPill()}</div>`;
+  if(!G) return head+`<div class="me-wrap card"><h2>선생님 화면에 연결하고 있어요</h2><p>참여 코드 <b>${esc(CODE)}</b>${NET==='nohost'?'로 열린 게임을 찾지 못했어요. 코드를 다시 확인하거나 선생님이 게임을 열었는지 확인해 주세요.':'…'}</p><button class="btn ghost" data-act="leave">코드 다시 입력하기</button></div>`;
+  const role=myRole();
+  if(G.phase==='reflect') return head+viewReflectForm(role);
+  if(!role || (G.phase==='lobby' && params.get('pick')==='1')) return head+viewPick(role);
+  return head+`<div class="me-wrap">${viewRole(role)}</div>`;
+}
+function roleDesc(r){
+  if(r==='farm') return '젖소의 우유를 짜서 가게들에게 팔아요. 우유를 모두 팔면 미션 성공!';
+  if(r==='watch') return '시장 전체를 지켜보며 무슨 일이 일어나는지 기록해요.';
+  if(BY[r]){ const s=BY[r]; return `우유 ${NEED(s)}팩을 사서 ${s.product} ${s.target}${s.unit}를 만들어 모두 팔면 미션 성공!`; }
+  const i=+r.slice(1); return `장보기 목록: ${CONSUMERS[i].map(([s,w])=>`${BY[s].product} ${w}`).join(', ')}. 모두 사면 미션 성공!`;
+}
+function viewPick(cur){
+  const opts=[...ROLES,'watch'].map(r=>{ const taken=r!=='watch'&&G.roles[r]&&G.roles[r]!==CID;
+    return `<button data-act="pick" data-role="${r}" aria-pressed="${cur===r}" ${taken?'disabled':''}>${roleIcon(r)} ${roleName(r)}<small>${taken?esc(G.players[G.roles[r]]?.name||'')+' 친구가 골랐어요':''}</small></button>`; }).join('');
+  return `<div class="me-wrap"><h2 style="font-size:26px;margin-bottom:6px">내 역할을 골라요</h2><p class="tiny">선생님이 정해 준 역할을 골라 주세요.</p><div class="pick">${opts}</div></div>`;
+}
+function viewRole(r){
+  const g=G;
+  let h=`<div class="rolehead"><span class="ic">${roleIcon(r)}</span><div><h2>${roleName(r)}</h2><div class="tiny">${roleDesc(r)}</div></div></div>`;
+  if(g.phase==='lobby'){
+    h+=`<div class="stepcard"><h3>선생님이 시작하기를 기다려요</h3><p class="tiny">${g.round?'선생님이 대기실을 열었어요.':''}</p><button class="btn ghost" data-act="repick">역할 바꾸기</button></div>`;
+    if(r[0]==='c') h+=viewOrder(+r.slice(1));
+    return h;
+  }
+  if(g.roundDone){ const o=outcome(g,r); if(o) h+=`<div class="result ${o.ok?'ok':'fail'}"><h3>${o.ok?'미션 완료!':'미션 실패'}</h3>${esc(o.msg)}${o.ok?'':'<div class="tiny" style="margin-top:6px">왜 이런 일이 생겼는지 학습지에 정리해 보세요.</div>'}</div>`; }
+  else if(g.round===2) h+=`<div class="news"><h3>속보: 젖소가 아파요</h3>돌림병으로 젖소 9마리 중 4마리가 죽어 우유가 25팩뿐이에요.</div>`;
+  if(r==='watch') return h+`<div class="board">${boardHTML(g)}</div>`;
+  if(r==='farm') return h+viewFarm();
+  if(BY[r]) return h+viewShop(r);
+  return h+viewConsumer(+r.slice(1));
+}
+function viewFarm(){
+  const g=G, live=!g.roundDone, done=missions(g).farm;
+  let h=`<div class="stepcard"><div class="cows">${'<span>🐄</span>'.repeat(g.cows)}${'<span class="sick">🐄</span>'.repeat(9-g.cows)}</div>
+    <div class="row" style="margin-top:8px;justify-content:space-between"><div>남은 우유<div class="big-n">${g.milk}팩</div></div><div>번 돈<div class="big-n">${won(g.farm.money)}</div></div></div>
+    ${done?'<span class="sticker ok">미션 완료</span>':''}</div>`;
+  if(g.round===2){
+    h+=`<div class="stepcard${g.method?' done':''}"><h3><i>1</i>판매 방식 정하기</h3>
+      <div class="pick" style="grid-template-columns:1fr 1fr">
+        <button data-act="farmMethod" data-m="first" aria-pressed="${g.method==='first'}" ${g.farmOpen||!live?'disabled':''}>오는 순서대로<small>먼저 온 가게가 필요한 만큼 사요</small></button>
+        <button data-act="farmMethod" data-m="even" aria-pressed="${g.method==='even'}" ${g.farmOpen||!live?'disabled':''}>골고루 나누어<small>주문을 모아 필요한 양에 맞춰 나눠요</small></button></div></div>`;
+  }
+  h+=`<div class="stepcard${g.farmOpen?' done':''}"><h3><i>${g.round===2?2:1}</i>우유 판매 시작하기</h3>
+    ${g.farmOpen?'<p>판매 중(OPEN)이에요. 가게들이 우유를 사러 와요.</p>':`<button class="btn big" data-act="farmOpen" ${!g.method||!live?'disabled':''}>OPEN 우유 판매 시작</button>`}</div>`;
+  if(g.method==='even' && g.farmOpen){
+    h+=`<div class="stepcard${g.distributed?' done':''}"><h3><i>3</i>골고루 나누어 주기</h3>
+      <p>주문한 가게 ${g.requests.length}/7곳: ${g.requests.map(id=>BY[id].name).join(', ')||'아직 없어요'}</p>
+      ${g.distributed?'<p>나누어 주었어요.</p>':`<button class="btn big" data-act="distribute" ${!g.requests.length||!live?'disabled':''}>남은 우유 ${g.milk}팩 나누어 주기</button><p class="tiny">주문이 다 모이면 눌러 주세요. 필요한 양에 맞춰 자동으로 나눠요.</p>`}</div>`;
+  }
+  return h;
+}
+function viewShop(id){
+  const g=G, s=BY[id], x=g.shops[id], live=!g.roundDone, need=NEED(s), ok=missions(g).shops[id];
+  const waiting = g.method==='even' && x.requested && !x.milkIn && !g.distributed;
+  let h=`<div class="stepcard${x.milkIn||x.requested&&g.distributed?' done':''}"><h3><i>1</i>젖소 농가에서 우유 사기</h3>
+    ${x.milkIn?`<p>우유 ${x.milkIn}팩을 샀어요 (필요한 양 ${need}팩, ${won(x.cost)}).${x.milkIn<need?' <b style="color:var(--red)">우유가 모자라요!</b>':''}</p>`
+    : waiting?'<p>주문했어요. 젖소 농가가 나누어 줄 때까지 기다려요.</p>'
+    : x.requested?'<p style="color:var(--red)">우유를 하나도 사지 못했어요.</p>'
+    : `<button class="btn big" data-act="buyMilk" ${!g.farmOpen||!live?'disabled':''}>우유 ${need}팩 사러 가기</button>${g.farmOpen?'':'<p class="tiny">젖소 농가가 문을 열면 살 수 있어요.</p>'}`}</div>`;
+  let cells=''; for(let j=0;j<s.target;j++){
+    if(j<x.made) cells+=`<button class="made${j<x.sold?' sold':''}" disabled aria-label="${s.product} ${j<x.sold?'팔림':'만듦'}">${s.icon}</button>`;
+    else { const can = j===x.made && x.milk>=s.per && live; cells+=`<button class="${can?'can':''}" data-act="make" ${can?'':'disabled'} aria-label="${s.product} 만들기">${can?'✂️':''}</button>`; } }
+  h+=`<div class="stepcard${x.made===s.target?' done':''}"><h3><i>2</i>${s.product} 만들기</h3>
+    <p class="tiny">${s.per>1?`우유 ${s.per}팩으로 ${s.product} 1${s.unit}를 만들어요. `:''}가위 칸을 눌러 하나씩 오려 내요. 남은 우유 ${x.milk}팩</p><div class="make">${cells}</div></div>`;
+  h+=`<div class="stepcard${x.open?' done':''}"><h3><i>3</i>가게 문 열고 팔기</h3>
+    ${x.open?`<p>OPEN! 판매 ${x.sold}/${x.made} · 번 돈 <b>${won(x.income)}</b></p>`:`<button class="btn big" data-act="shopOpen" ${!x.made||!live?'disabled':''}>OPEN 가게 문 열기</button><p class="tiny">${s.product} 1${s.unit}에 ${won(s.price)}</p>`}
+    ${ok?'<span class="sticker ok">미션 완료</span>':''}</div>`;
+  return h;
+}
+function viewOrder(i){
+  const c=G.consumers[i];
+  return `<div class="stepcard"><h3>살 순서 정하기</h3><p class="tiny">먼저 사러 갈 물건을 위로 올려요.</p><div class="mkt">${c.order.map((k,pos)=>{ const [sid,w]=CONSUMERS[i][k], s=BY[sid];
+    return `<div class="mi"><span class="big-n" style="font-size:22px">${pos+1}</span><span class="ic">${s.icon}</span><div class="tx"><b>${s.product} ×${w}</b></div>
+      <div class="ord"><button data-act="ord" data-p="${pos}" data-d="-1" ${pos===0?'disabled':''} aria-label="위로">▲</button><button data-act="ord" data-p="${pos}" data-d="1" ${pos===2?'disabled':''} aria-label="아래로">▼</button></div></div>`; }).join('')}</div></div>`;
+}
+function viewConsumer(i){
+  const g=G, c=g.consumers[i], live=!g.roundDone, ok=missions(g).cons[i], budget=consBudget(i);
+  let h=`<div class="stepcard"><div class="row" style="justify-content:space-between"><div>가진 돈<div class="big-n">${won(budget-c.spent)}</div></div><div class="tiny">잔돈이 없어요.<br>꼭 필요한 돈만 받았어요.</div></div>${ok?'<span class="sticker ok">미션 완료</span>':''}</div>`;
+  h+=`<div class="stepcard"><h3>장보기</h3><div class="mkt">${c.order.map((k,pos)=>{ const [sid,w]=CONSUMERS[i][k], s=BY[sid], sh=g.shops[sid], b=c.bought[sid], done=b>=w;
+    const status = done?'다 샀어요 ✓' : !sh.open?'아직 문을 열지 않았어요' : sh.stock<=0?'다 떨어졌어요' : `남은 ${s.product} ${sh.stock}${s.unit}`;
+    return `<div class="mi${done?' done':''}"><span class="ic">${s.icon}</span><div class="tx"><b>${pos+1}. ${s.product} ${b}/${w}</b><div class="tiny">${s.name} · ${won(s.price)} · ${status}</div></div>
+      ${done?'':`<button class="btn" data-act="buy" data-shop="${sid}" ${!sh.open||sh.stock<=0||!live?'disabled':''}>사기</button>`}</div>`; }).join('')}</div></div>`;
+  if(!g.farmOpen && live) h+=viewOrder(i);
+  return h;
+}
+let reflDraft=null;
+function viewReflectForm(role){
+  const done=G.reflections[CID];
+  const o=G.round?outcome(G,role):null;
+  if(!reflDraft) reflDraft=store.get('kkr-refl',{q1:'',q2:'',q3:''});
+  return `<div class="me-wrap"><h2 style="font-size:26px;margin-bottom:8px">친구들과 생각 나누기</h2>
+    ${o?`<div class="result ${o.ok?'ok':'fail'}"><b>활동 2에서 나(${roleName(role)})는</b> ${o.ok?'미션을 완료했어요.':'미션에 실패했어요.'}<div class="tiny" style="margin-top:4px">${esc(o.msg)}</div></div>`:''}
+    <div class="stepcard"><label class="f" for="q1">미션에 실패했다면, 실패한 까닭은?</label><textarea id="q1">${esc(reflDraft.q1)}</textarea>
+    <label class="f" for="q2">오늘 활동으로 알게 된 점</label><textarea id="q2">${esc(reflDraft.q2)}</textarea>
+    <p class="tiny">생각이 막히면: 우유가 줄어들었을 때 어떤 가게, 어떤 사람이 손해를 봤는지 차례대로 떠올려 봐요.</p>
+    <label class="f" for="q3">느낀 점</label><textarea id="q3">${esc(reflDraft.q3)}</textarea>
+    <div style="margin-top:12px"><button class="btn big" data-act="submitRefl">${done?'다시 제출하기':'선생님께 제출하기'}</button></div>
+    ${done?'<p class="tiny">제출했어요! 선생님 화면에 나타나요.</p>':''}</div></div>`;
+}
+
+/* ===== 그리기 (입력 중인 글은 지우지 않음) ===== */
+let lastKey='';
+function render(){
+  let html, key;
+  if(MODE==='home'){ if(lastKey==='home') return; html=viewHome(); key='home'; }
+  else if(MODE==='host'){ html=viewHost(); key='host'; }
+  else {
+    const inReflect = G && G.phase==='reflect';
+    key = inReflect ? 'refl:'+(G.reflections[CID]?1:0) : 'stu';
+    if(inReflect && lastKey===key) return;
+    html=viewStudent();
+  }
+  const y=window.scrollY; $app.innerHTML=html; lastKey=key; window.scrollTo(0,y);
+}
+
+/* ===== 클릭 처리 ===== */
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-act]'); if(!b||b.disabled) return; const a=b.dataset.act;
+  if(a==='hostNew'){ if(store.get('kkr-game',null) && !confirm('새 게임을 만들면 이전 게임 기록이 지워져요. 계속할까요?')) return; lastKey=''; hostBegin(newCode(),null); return; }
+  if(a==='hostResume'){ const s=store.get('kkr-host',null), g=store.get('kkr-game',null); if(s&&g){ Object.values(g.players).forEach(p=>p.online=false); lastKey=''; hostBegin(s.code,g); } return; }
+  if(a==='join'){ const code=document.getElementById('inCode').value.trim().toUpperCase(), name=document.getElementById('inName').value.trim();
+    if(code.length!==5) return toast('참여 코드 5자리를 입력해 주세요.'); if(!name) return toast('이름을 입력해 주세요.'); lastKey=''; studentBegin(code,name); return; }
+  if(a==='leave'){ try{peer&&peer.destroy();}catch(_){} store.set('kkr-student',null); MODE='home'; G=null; lastKey=''; history.replaceState(null,'',location.pathname); render(); return; }
+  if(MODE==='host'){
+    if(a.startsWith('h:')){ const t=a.slice(2);
+      if(t==='back'){ G.phase = G.round?'play':'lobby'; changed(); return; }
+      if(t==='start1'&&G.round>0&&!confirm('활동 1을 처음부터 다시 시작할까요?')) return;
+      if(t==='start2'&&G.round===2&&!confirm('활동 2를 처음부터 다시 시작할까요?')) return;
+      if(t==='endRound'&&!confirm('시장 문을 닫고 결과를 확인할까요?')) return;
+      hostAct({t}); return; }
+    if(a==='free'){ if(G.roles[b.dataset.role] && confirm(`${roleName(b.dataset.role)} 역할을 비울까요?`)) hostAct({t:'free',role:b.dataset.role}); return; }
+    return;
+  }
+  if(MODE==='student'){
+    const r=myRole();
+    if(a==='pick'){ send({t:'pick',role:b.dataset.role}); if(params.get('pick')){ params.delete('pick'); } return; }
+    if(a==='repick'){ params.set('pick','1'); render(); return; }
+    if(a==='farmMethod') return send({t:'farmMethod',m:b.dataset.m});
+    if(a==='farmOpen') return send({t:'farmOpen'});
+    if(a==='distribute') return send({t:'distribute'});
+    if(a==='buyMilk') return send({t:'buyMilk',shop:r});
+    if(a==='make') return send({t:'make',shop:r});
+    if(a==='shopOpen') return send({t:'shopOpen',shop:r});
+    if(a==='buy') return send({t:'buy',shop:b.dataset.shop});
+    if(a==='ord'){ const o=G.consumers[+r.slice(1)].order.slice(), p=+b.dataset.p, q=p+(+b.dataset.d); [o[p],o[q]]=[o[q],o[p]]; return send({t:'order',order:o}); }
+    if(a==='submitRefl'){ const v=id=>document.getElementById(id).value; reflDraft={q1:v('q1'),q2:v('q2'),q3:v('q3')}; store.set('kkr-refl',reflDraft);
+      if(!reflDraft.q2.trim()&&!reflDraft.q1.trim()) return toast('알게 된 점을 한 줄이라도 써 주세요.'); send({t:'reflect',...reflDraft}); toast('제출했어요!'); return; }
+  }
+});
+document.addEventListener('change',e=>{ if(MODE==='host'&&e.target.dataset.act==='bots') hostAct({t:'bots',on:e.target.checked}); });
+document.addEventListener('input',e=>{ if(MODE==='student'&&/^q[123]$/.test(e.target.id)){ reflDraft={...(reflDraft||{}),[e.target.id]:e.target.value}; store.set('kkr-refl',reflDraft); } });
+
+/* ===== 시작 ===== */
+(function boot(){
+  const stu=store.get('kkr-student',null), room=(params.get('room')||'').toUpperCase();
+  if(room && stu && stu.code===room && stu.name){ studentBegin(room, stu.name); return; }
+  render();
+})();
+</script>
+</body></html>
